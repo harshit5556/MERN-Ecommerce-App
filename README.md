@@ -22,3 +22,20 @@ Stripe API – Secure online payment processing![Screenshot 2025-06-04 143216](h
 ![Screenshot 2025-06-04 142850](https://github.com/user-attachments/assets/113739fc-dfac-4a32-a86c-279aeaaab79c)
 ![Screenshot 2025-06-04 142815](https://github.com/user-attachments/assets/3ba04808-eed9-44e5-b279-2d23c82c95e3)
 
+
+Setup
+1) Download Node Modules
+2) Backend Environment variables  : 
+MONGODB_URL : ""
+STRIPE_SECRET_KEY : "",
+FRONTEND_URL : "",
+start:
+npm run dev 
+
+3)Frontend Environment variables  :
+REACT_APP_SERVER_DOMIN = "",
+REACT_APP_ADMIN_EMAIL = "",
+REACT_APP_STRIPE_PUBLIC_KEY  = ""
+
+start : 
+## npm start
