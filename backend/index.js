@@ -5,10 +5,7 @@ const dotenv = require("dotenv").config();
 const Stripe = require('stripe')
 
 const app = express();
-app.use(cors({
-  origin: "https://mern-ecommerce-app-fro.onrender.com",
-  credentials: true
-}));
+app.use(cors());
 
 
 
