@@ -54,51 +54,52 @@ app.get("/", (req, res) => {
   res.send("Server is running");
 });
 
-//sign up
 app.post("/signup", async (req, res) => {
-  // console.log(req.body);
-  const { email } = req.body;
+  try {
+    const { email } = req.body;
 
-  userModel.findOne({ email: email }, (err, result) => {
-    // console.log(result);
-    console.log(err);
-    if (result) {
-      res.send({ message: "Email id is already register", alert: false });
-    } else {
-      const data = userModel(req.body);
-      const save = data.save();
-      res.send({ message: "Successfully sign up", alert: true });
+    const existingUser = await userModel.findOne({ email });
+
+    if (existingUser) {
+      return res.json({ message: "Email id is already registered", alert: false });
     }
-  });
+
+    const newUser = new userModel(req.body);
+    await newUser.save();
+
+    return res.json({ message: "Successfully signed up", alert: true });
+
+  } catch (error) {
+    console.error("Signup error:", error);
+    return res.status(500).json({ message: "Internal server error", alert: false });
+  }
 });
+
 
 //api login
-app.post("/login", (req, res) => {
-  // console.log(req.body);
-  const { email } = req.body;
-  userModel.findOne({ email: email }, (err, result) => {
-    if (result) {
+app.post("/login", async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await userModel.findOne({ email });
+
+    if (user) {
       const dataSend = {
-        _id: result._id,
-        firstName: result.firstName,
-        lastName: result.lastName,
-        email: result.email,
-        image: result.image,
+        _id: user._id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        image: user.image,
       };
-      console.log(dataSend);
-      res.send({
-        message: "Login is successfully",
-        alert: true,
-        data: dataSend,
-      });
+      return res.json({ message: "Login is successful", alert: true, data: dataSend });
     } else {
-      res.send({
-        message: "Email is not available, please sign up",
-        alert: false,
-      });
+      return res.json({ message: "Email is not available, please sign up", alert: false });
     }
-  });
+  } catch (error) {
+    console.error("Login error:", error);
+    return res.status(500).json({ message: "Internal server error", alert: false });
+  }
 });
+
 
 //product section
 
