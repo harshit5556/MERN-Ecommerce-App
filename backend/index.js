@@ -8,7 +8,7 @@ const app = express();
 const allowedOrigins = [
   "http://localhost:3000",  
   "http://localhost:3001",
-  process.env.FRONTEND_URL  
+  "https://mern-ecommerce-app-fro.onrender.com/"  
 ];
 
 app.use(cors({
