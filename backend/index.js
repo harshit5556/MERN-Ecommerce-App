@@ -61,7 +61,7 @@ app.post("/signup", async (req, res) => {
     const existingUser = await userModel.findOne({ email });
 
     if (existingUser) {
-      return res.json({ message: "Email id is already registered", alert: false });
+      return res.json({ message: "Email is already registered", alert: false });
     }
 
     const newUser = new userModel(req.body);
