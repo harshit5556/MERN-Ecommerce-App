@@ -9,6 +9,8 @@ function Signup() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const [data, setData] = useState({
     firstName: "",
     lastName: "",
@@ -52,26 +54,27 @@ function Signup() {
     }
 
     try {
+      setIsSubmitting(true);
+
+      // Exclude confirmPassword from submission
+      const { confirmPassword, ...submitData } = data;
+
       const res = await fetch(`${process.env.REACT_APP_SERVER_DOMIN}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(submitData)
       });
 
-      const text = await res.text();
-      let dataRes;
+      const dataRes = await res.json();
 
-      try {
-        dataRes = JSON.parse(text);
-      } catch (err) {
-        console.error("JSON parse error:", text);
-        toast.error("Server response is not valid JSON.");
+      if (!res.ok) {
+        toast.error(dataRes.message || "Something went wrong.");
         return;
       }
 
-      toast(dataRes.message);
+      toast.success(dataRes.message);
       if (dataRes.alert) {
         navigate("/login");
       }
@@ -79,12 +82,15 @@ function Signup() {
     } catch (err) {
       console.error("Network/server error:", err);
       toast.error("Something went wrong. Try again later.");
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
   return (
     <div className="p-3 md:p-4">
       <div className="w-full max-w-sm bg-white m-auto flex flex-col p-4">
+        {/* Profile Image Upload */}
         <div className="w-20 h-20 overflow-hidden rounded-full drop-shadow-md shadow-md m-auto relative">
           <img src={data.image || loginSignupImage} className="w-full h-full" alt="profile" />
           <label htmlFor="profileImage">
@@ -101,6 +107,7 @@ function Signup() {
           </label>
         </div>
 
+        {/* Form */}
         <form className="w-full py-3 flex flex-col" onSubmit={handleSubmit}>
           <label htmlFor="firstName">First Name</label>
           <input
@@ -167,13 +174,19 @@ function Signup() {
             </span>
           </div>
 
-          <button className="w-full max-w-[150px] m-auto bg-red-500 hover:bg-red-600 cursor-pointer text-white text-xl font-medium text-center py-1 rounded-full mt-4">
-            Sign up
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className={`w-full max-w-[150px] m-auto bg-red-500 hover:bg-red-600 text-white text-xl font-medium text-center py-1 rounded-full mt-4 ${
+              isSubmitting ? "opacity-50 cursor-not-allowed" : ""
+            }`}
+          >
+            {isSubmitting ? "Signing up..." : "Sign up"}
           </button>
         </form>
 
         <p className="text-left text-sm mt-2">
-          Already have account?{" "}
+          Already have an account?{" "}
           <Link to={"/login"} className="text-red-500 underline">
             Login
           </Link>
