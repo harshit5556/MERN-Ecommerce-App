@@ -7,8 +7,7 @@ const Stripe = require('stripe')
 const app = express();
 const allowedOrigins = [
   "http://localhost:3000",  
-  "http://localhost:3001",
-  "https://mern-ecommerce-app-fro.onrender.com/"  
+  "https://mern-ecommerce-app-frontend1.onrender.com/"  
 ];
 
 app.use(cors({
